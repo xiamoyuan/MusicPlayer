@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
     public MediaPlayer mediaPlayer;
     private RelativeLayout rlPlayMusic;
     public TextView tvPMTitle, tvPMSinger, tvPMLrc, tvPMCurrentTime, tvPMTotalTime;
-    public ImageView ivPMBackground, ivPMAlbum;
+    public ImageView ivPMBackground, ivPMAlbum,ivPMStart;
     public SeekBar seekBar;
     private MyApp app;
     private MusicModel model;
@@ -129,8 +129,11 @@ public class MainActivity extends AppCompatActivity {
     public void startOrPause() {
         if(mediaPlayer.isPlaying()){
             mediaPlayer.pause();
+            ivPMStart.setImageResource(R.mipmap.btn_pause);
+
         }else{
             mediaPlayer.start();
+            ivPMStart.setImageResource(R.mipmap.btn_start);
         }
     }
     public void controllMusic(View view){
@@ -346,6 +349,7 @@ public class MainActivity extends AppCompatActivity {
         tvPMTotalTime =  findViewById(R.id.tvPMTotalTime);
         ivPMBackground =  findViewById(R.id.ivPMBackground);
         ivPMAlbum =  findViewById(R.id.ivPMAlbum);
+        ivPMStart = findViewById(R.id.ivPMStart);
         seekBar =  findViewById(R.id.seekBar);
 
 
