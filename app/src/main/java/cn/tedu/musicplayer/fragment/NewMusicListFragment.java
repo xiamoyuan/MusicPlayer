@@ -82,7 +82,7 @@ public class NewMusicListFragment extends Fragment {
         super.onDestroy();
         //把adapter中的线程停掉
         adapter.stopThread();
-
+        System.exit(1);
     }
     //
     public void musicTime()
