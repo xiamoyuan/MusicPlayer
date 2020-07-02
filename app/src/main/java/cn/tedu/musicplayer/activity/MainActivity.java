@@ -250,6 +250,13 @@ public class MainActivity extends AppCompatActivity {
                 rlPlayMusic.startAnimation(anim);
             }
         });
+
+        tvCMTitle.setOnTouchListener(new View.OnTouchListener() {
+            public boolean onTouch(View v, MotionEvent event) {
+                //自己消费touch事件
+                return true;
+            }
+        });
         //给rlPlayMusic添加touch事件  拦截事件
         rlPlayMusic.setOnTouchListener(new View.OnTouchListener() {
             public boolean onTouch(View v, MotionEvent event) {

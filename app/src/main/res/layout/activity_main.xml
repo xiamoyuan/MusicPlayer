@@ -145,7 +145,7 @@
             android:textColor="#ffffff"
             android:layout_marginBottom="6dp"
             android:layout_marginTop="12dp"
-            android:text="歌词歌词歌词歌词歌词歌词歌词歌词歌词" />
+            android:text="Unknow" />
 
         <SeekBar
             android:id="@+id/seekBar"
