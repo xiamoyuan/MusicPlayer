@@ -2,6 +2,7 @@ package cn.tedu.musicplayer.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -17,6 +18,7 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
@@ -29,11 +31,13 @@ import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import cn.tedu.musicplayer.app.MyApp;
@@ -42,6 +46,7 @@ import cn.tedu.musicplayer.entity.Song_list;
 import cn.tedu.musicplayer.fragment.HotMusicListFragment;
 import cn.tedu.musicplayer.fragment.NewMusicListFragment;
 import cn.tedu.musicplayer.model.BitmapCallback;
+import cn.tedu.musicplayer.model.LrcCallback;
 import cn.tedu.musicplayer.model.MusicModel;
 import cn.tedu.musicplayer.model.SongInfoCallBack;
 import cn.tedu.musicplayer.ui.CircleImageView;
@@ -348,6 +353,24 @@ public class MainActivity extends AppCompatActivity {
                 tvPMSinger.setText(song.getSonginfo().getAuthor());
             }
 
+        });
+    }
+    //下载歌词
+    public void lrcDowload()
+    {
+        final Song_list m= app.getApp().getCurrentMusic();
+        if(m.getLrc()!=null){ //以前已经下载过了
+            return;
+        }
+        String lrcPath = m.getLrclink();
+        if(lrcPath==null || lrcPath.equals("")){
+            Toast.makeText(this, "该歌曲没有歌词", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        model.loadLrc(lrcPath, new LrcCallback(){
+            public void onLrcLoaded(HashMap<String, String> lrc) {
+                m.setLrc(lrc);  //歌词加载解析保存完毕
+            }
         });
     }
     /*

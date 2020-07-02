@@ -16,6 +16,7 @@ import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -27,6 +28,7 @@ import cn.tedu.musicplayer.adapter.MusicAdapter;
 import cn.tedu.musicplayer.app.MyApp;
 import cn.tedu.musicplayer.entity.Song_list;
 import cn.tedu.musicplayer.model.BitmapCallback;
+import cn.tedu.musicplayer.model.LrcCallback;
 import cn.tedu.musicplayer.model.MusicListCallback;
 import cn.tedu.musicplayer.model.MusicModel;
 import cn.tedu.musicplayer.entity.Song;
@@ -45,8 +47,10 @@ public class NewMusicListFragment extends Fragment {
     private MusicAdapter adapter;
     private MusicModel model;
     private List<Song_list> song_lists;
+    private TextView tvPMLrc;
     private MediaPlayer mediaPlayer;
     private MyApp app;
+    private Song_list m1;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable final Bundle savedInstanceState) {
@@ -97,8 +101,7 @@ public class NewMusicListFragment extends Fragment {
                 public void run() {
                     if(activity.mediaPlayer!=null&&activity.mediaPlayer.isPlaying())
                     {
-                        Song_list m = app.getApp().getCurrentMusic();
-                        HashMap<String, String> lrc = m.getLrc();
+
                         activity.runOnUiThread(new Runnable(){
 
                             @Override
@@ -107,6 +110,13 @@ public class NewMusicListFragment extends Fragment {
                                 int position = activity.mediaPlayer.getCurrentPosition();
                                 activity.tvPMCurrentTime.setText(calculateTime(position/1000));
                                 activity.seekBar.setProgress(position);
+                                HashMap<String, String> lrc = m1.getLrc();
+                                if(lrc!=null) { //歌词是存在的
+                                    String content = lrc.get(calculateTime(position/1000));
+                                    if (content != null) { //当前时间需要更新歌词
+                                        activity.tvPMLrc.setText(content);
+                                    }
+                                }
 
                             }
 
@@ -139,14 +149,33 @@ public class NewMusicListFragment extends Fragment {
                 activity.tvPMTotalTime.setText(calculateTime(duration2));
                 activity.seekBar.setMax(duration2*1000);
                 activity.seekBar.setProgress(position);
-
+                lrcDowload();
 
             };
 
         });
 
     }
+    //下载歌词
+    public void lrcDowload()
+    {
+        m1 = app.getApp().getCurrentMusic();
+        if(m1.getLrc()!=null){ //以前已经下载过了
+            return;
+        }
+        String lrcPath = m1.getLrclink();
+        Log.e("path",lrcPath);
+        if(lrcPath==null || lrcPath.equals("")){
+            Toast.makeText(getActivity(), "该歌曲没有歌词", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        model.loadLrc(lrcPath, new LrcCallback(){
+            public void onLrcLoaded(HashMap<String, String> lrc) {
+                m1.setLrc(lrc);
+            }
+        });
 
+    }
 
     //计算播放时间
     public String calculateTime(int time){
@@ -197,6 +226,7 @@ public class NewMusicListFragment extends Fragment {
                         app.setSongs(song_lists);
                     }
                 });
+
                 Song_list song_list = song_lists.get(position);
                 //获取当前点击音乐的song_id
                 app.setPosition(position);
@@ -212,6 +242,8 @@ public class NewMusicListFragment extends Fragment {
                         String smallPicPath=song.getSonginfo().getPic_small();
                         final MainActivity activity=(MainActivity) getActivity();
                         activity.tvCMTitle.setText(titile);
+                        //歌词加载
+
                         BitmapUtils.loadBitmap(getContext(),smallPicPath, new BitmapCallback(){
                         @Override
                         public void onBitmapLoaded(Bitmap bitmap) {

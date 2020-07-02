@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import cn.tedu.musicplayer.app.MyApp;
 import cn.tedu.musicplayer.entity.Song_list;
 import cn.tedu.musicplayer.util.HttpUtils;
 import cn.tedu.musicplayer.util.JSONParser;
@@ -11,6 +12,14 @@ import cn.tedu.musicplayer.util.UrlFactory;
 import cn.tedu.musicplayer.entity.Song;
 import cn.tedu.musicplayer.entity.Songinfo;
 import cn.tedu.musicplayer.model.SongInfoCallBack;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.util.HashMap;
 import java.util.List;
 
 public class MusicModel {
@@ -97,4 +106,74 @@ public class MusicModel {
         };
         task.execute();
     }
+    /**
+     * 加载歌词数据  解析歌词文本  封装为
+     * HashMap<String, String> lrc;
+     * @param lrcPath
+     * @param callback
+     */
+    @SuppressLint("StaticFieldLeak")
+    public void loadLrc(final String lrcPath, final LrcCallback callback) {
+        AsyncTask<String, String, HashMap<String, String> > task;
+        task = new AsyncTask<String, String, HashMap<String,String>>(){
+            protected HashMap<String, String> doInBackground(String... params) {
+                try {
+                    if(lrcPath == null || lrcPath.equals("")){ //歌词目录不存在
+                        return null;
+                    }
+                    //声明歌词缓存文件对象
+                    MyApp app=new MyApp();
+                    String filename = lrcPath.substring(lrcPath.lastIndexOf("/"));
+                    File file = new File(app.getApp().getCacheDir(), "lrc"+filename);
+                    PrintWriter out = null;
+                    if(!file.getParentFile().exists()){ //父目录不存在
+                        file.getParentFile().mkdirs();
+                    }
+                    InputStream is = null;
+                    boolean isFromFile=false;
+                    if(file.exists()){ //缓存目录中已经下载过歌词了
+                        is = new FileInputStream(file);
+                        isFromFile = true;
+                    }else{// 缓存目录中没有则下载歌词
+                        is = HttpUtils.getInputStream(lrcPath);
+                        out = new PrintWriter(file);
+                        isFromFile = false;
+                    }
+                    //解析输入流
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+                    String line = null;
+                    HashMap<String, String> lrc = new HashMap<String, String>();
+                    while((line=reader.readLine())!=null){
+                        if(!isFromFile){
+                            //把line 保存到歌词缓存文件中
+                            out.println(line);
+                            out.flush();
+                        }
+                        //判断格式是否是:
+                        //  [title]歌名 ...
+                        if(!line.startsWith("[") || !line.contains(":") || !line.contains(".")){
+                            continue;
+                        }
+                        //  [00:00.00]歌词内容
+                        String time = line.substring(1, line.indexOf("."));
+                        String content = line.substring(line.lastIndexOf("]")+1);
+                        lrc.put(time, content);
+                    }
+                    if(out!=null){ //关闭输出流
+                        out.close();
+                    }
+                    return lrc;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+            protected void onPostExecute(HashMap<String, String> result) {
+                //调用回调方法
+                callback.onLrcLoaded(result);
+            }
+        };
+        task.execute();
+    }
+
 }
