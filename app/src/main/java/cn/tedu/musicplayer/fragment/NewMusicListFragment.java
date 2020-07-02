@@ -84,6 +84,7 @@ public class NewMusicListFragment extends Fragment {
         adapter.stopThread();
 
     }
+    //
     public void musicTime()
     {
         final MainActivity activity=(MainActivity) getActivity();
