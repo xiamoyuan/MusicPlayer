@@ -56,6 +56,7 @@ public class HotMusicListFragment extends Fragment {
             public void onMusicListLoaded(List<Song_list> song_lists) {
                 //拿到网络上的json数据
                 HotMusicListFragment.this.song_lists=song_lists;
+                app.setSongs(song_lists);
                 setAdapter();
             }
         });
@@ -178,9 +179,17 @@ public class HotMusicListFragment extends Fragment {
         lvNewMusic.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                 final MyApp app=MyApp.getApp();
+                //调用业务层，加载所有新歌榜音乐
+                model=new MusicModel();
+                model.loadHotMusicList(0, 20, new MusicListCallback() {
+                    @Override
+                    public void onMusicListLoaded(List<Song_list> song_lists) {
+                        app.setSongs(song_lists);
+                    }
+                });
                 Song_list song_list = song_lists.get(position);
                 //获取当前点击音乐的song_id
-                MyApp app=MyApp.getApp();
                 app.setPosition(position);
                 String song_id = song_list.getSong_id();
                 Log.e("ss",song_id);

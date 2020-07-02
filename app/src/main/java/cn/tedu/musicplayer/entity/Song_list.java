@@ -6,6 +6,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.Date;
+import java.util.HashMap;
 
 /**
  * Auto-generated: 2020-06-29 9:5:13
@@ -70,6 +71,14 @@ public class Song_list implements Parcelable {
     private String album_500_500;
     private String album_800_800;
     private String album_1000_1000;
+    private HashMap<String, String> lrc;
+    public HashMap<String, String> getLrc() {
+        return lrc;
+    }
+
+    public void setLrc(HashMap<String, String> lrc) {
+        this.lrc = lrc;
+    }
 
     protected Song_list(Parcel in) {
         artist_id = in.readString();

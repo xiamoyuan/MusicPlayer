@@ -34,6 +34,7 @@ import cn.tedu.musicplayer.model.SongInfoCallBack;
 import cn.tedu.musicplayer.util.BitmapUtils;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -45,6 +46,7 @@ public class NewMusicListFragment extends Fragment {
     private MusicModel model;
     private List<Song_list> song_lists;
     private MediaPlayer mediaPlayer;
+    private MyApp app;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable final Bundle savedInstanceState) {
@@ -93,7 +95,10 @@ public class NewMusicListFragment extends Fragment {
             timer.schedule(new TimerTask() {
                 @Override
                 public void run() {
-                    if(activity.mediaPlayer!=null&&activity.mediaPlayer.isPlaying()){
+                    if(activity.mediaPlayer!=null&&activity.mediaPlayer.isPlaying())
+                    {
+                        Song_list m = app.getApp().getCurrentMusic();
+                        HashMap<String, String> lrc = m.getLrc();
                         activity.runOnUiThread(new Runnable(){
 
                             @Override
@@ -182,9 +187,18 @@ public class NewMusicListFragment extends Fragment {
         lvNewMusic.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                final MyApp app=MyApp.getApp();
+                //调用业务层，加载所有新歌榜音乐
+                model=new MusicModel();
+                model.loadMusicList(0, 20, new MusicListCallback() {
+                    @Override
+                    public void onMusicListLoaded(List<Song_list> song_lists) {
+                        //当列表加载完之后存入application
+                        app.setSongs(song_lists);
+                    }
+                });
                 Song_list song_list = song_lists.get(position);
                 //获取当前点击音乐的song_id
-                MyApp app=MyApp.getApp();
                 app.setPosition(position);
                 String song_id = song_list.getSong_id();
                 Log.e("ss",song_id);
