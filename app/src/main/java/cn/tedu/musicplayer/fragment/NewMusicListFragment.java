@@ -100,6 +100,7 @@ public class NewMusicListFragment extends Fragment {
                                 //更新UI
                                 int position = activity.mediaPlayer.getCurrentPosition();
                                 activity.tvPMCurrentTime.setText(calculateTime(position/1000));
+                                activity.seekBar.setProgress(position);
 
                             }
 
@@ -130,6 +131,8 @@ public class NewMusicListFragment extends Fragment {
                 int position = activity.mediaPlayer.getCurrentPosition();
                 activity.tvPMCurrentTime.setText(calculateTime(position/1000));
                 activity.tvPMTotalTime.setText(calculateTime(duration2));
+                activity.seekBar.setMax(duration2*1000);
+                activity.seekBar.setProgress(position);
 
 
             };

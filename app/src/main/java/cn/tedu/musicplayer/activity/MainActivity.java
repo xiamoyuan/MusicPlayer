@@ -15,6 +15,7 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
@@ -59,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
     private RelativeLayout rlPlayMusic;
     public TextView tvPMTitle, tvPMSinger, tvPMLrc, tvPMCurrentTime, tvPMTotalTime;
     public ImageView ivPMBackground, ivPMAlbum;
-    private SeekBar seekBar;
+    public SeekBar seekBar;
     private MyApp app;
     private MusicModel model;
 
@@ -296,7 +297,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
-class MainPagerAdapter extends FragmentPagerAdapter
+    class MainPagerAdapter extends FragmentPagerAdapter
     {
         public MainPagerAdapter(FragmentManager fm)
         {super(fm);}
@@ -313,30 +314,33 @@ class MainPagerAdapter extends FragmentPagerAdapter
     }
 
     @Override
-public void onBackPressed()
-{
-    if(rlPlayMusic.getVisibility()==View.VISIBLE)
+    public void onBackPressed()
     {
+        if(rlPlayMusic.getVisibility()==View.VISIBLE)
+        {
         rlPlayMusic.setVisibility(View.INVISIBLE);
         ScaleAnimation anim = new ScaleAnimation(1,0,1,0,0,rlPlayMusic.getHeight());
         anim.setDuration(300);
         rlPlayMusic.startAnimation(anim);
-    }
-    else
+        }
+        else
         {
             super.onBackPressed();
         }
 }
-public void setSeekBar()
+//setSeekBar 进度条控制
+    public void setSeekBar()
     {
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
-            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b)
+            {
 
             }
 
             @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
+            public void onStartTrackingTouch(SeekBar seekBar)
+            {
                 mediaPlayer.pause();
             }
 
@@ -344,6 +348,7 @@ public void setSeekBar()
             public void onStopTrackingTouch(SeekBar seekBar) {
                 mediaPlayer.start();
                 mediaPlayer.seekTo(seekBar.getProgress());//在当前位置播放
+                Log.e("seek", String.valueOf(seekBar.getProgress()));
             }
         });
     }
