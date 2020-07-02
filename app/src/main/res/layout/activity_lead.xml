@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_splash"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FF0000"
+    tools:context=".activity.activity_lead">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        >
+
+
+
+        <TextView
+            android:id="@+id/text1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="50dp"
+            android:gravity="center"
+            android:text="欢迎使用             网易云音乐"
+            android:textSize="60dp"
+            android:textColor="#FFFFFF" />
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="50dp"
+            android:gravity="center"
+            android:textSize="40dp"
+            android:text="我们会为您提供最优质的音乐服务！"
+            android:textColor="#FFFFFF" />
+
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="50dp"
+            android:gravity="center"
+            android:textSize="40dp"
+            android:text="新歌榜||热歌榜"
+            android:textColor="#FFFFFF" />
+
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+
+
+            android:gravity="center"
+            android:textSize="60dp"
+            android:text="任您挑选"
+            android:textColor="#FFFFFF"
+
+            />
+        <Button
+            android:id="@+id/button1"
+            android:layout_width="370dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="50dp"
+            android:gravity="center"
+
+            android:text="立即体验"
+            android:textSize="30dp"
+            android:background="@drawable/shape"
+            style="?android:attr/borderlessButtonStyle"
+
+
+
+            />
+    </LinearLayout>
+
+
+</RelativeLayout>

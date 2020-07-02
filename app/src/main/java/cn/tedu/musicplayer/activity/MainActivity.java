@@ -2,6 +2,8 @@ package cn.tedu.musicplayer.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -15,7 +17,6 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
@@ -67,6 +68,9 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+
+        lead();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setViews();
@@ -78,6 +82,29 @@ public class MainActivity extends AppCompatActivity {
         model=new MusicModel();
     }
 
+
+
+    public void lead(){
+        //定义第一次引导页面
+        //设置初次登录标志位
+        Boolean isFirstIn = false;
+        SharedPreferences pref = getSharedPreferences("myActivityName", 0);
+//取得相应的值，如果没有该值，说明还未写入，用true作为默认值
+        isFirstIn = pref.getBoolean("isFirstIn", true);
+
+        //
+        //SharedPreferences pref = getSharedPreferences("myActivityName", 0);
+        if(isFirstIn == true)
+        {
+            Intent intent = new Intent();
+            intent.setClass(MainActivity.this,activity_lead.class);
+            startActivity(intent);
+            SharedPreferences.Editor editor = pref.edit();
+            editor.putBoolean("isFirstIn", false);
+            editor.commit();
+
+        }
+    }
     public void setmediaPlayer()
     {
         mediaPlayer=new MediaPlayer();
@@ -310,7 +337,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
-    class MainPagerAdapter extends FragmentPagerAdapter
+class MainPagerAdapter extends FragmentPagerAdapter
     {
         public MainPagerAdapter(FragmentManager fm)
         {super(fm);}
@@ -327,33 +354,31 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onBackPressed()
+public void onBackPressed()
+{
+    if(rlPlayMusic.getVisibility()==View.VISIBLE)
     {
-        if(rlPlayMusic.getVisibility()==View.VISIBLE)
-        {
         rlPlayMusic.setVisibility(View.INVISIBLE);
         ScaleAnimation anim = new ScaleAnimation(1,0,1,0,0,rlPlayMusic.getHeight());
         anim.setDuration(300);
         rlPlayMusic.startAnimation(anim);
-        }
-        else
+    }
+    else
         {
             super.onBackPressed();
         }
 }
-//setSeekBar 进度条控制
-    public void setSeekBar()
+//setSeekBar
+public void setSeekBar()
     {
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
-            public void onProgressChanged(SeekBar seekBar, int i, boolean b)
-            {
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
 
             }
 
             @Override
-            public void onStartTrackingTouch(SeekBar seekBar)
-            {
+            public void onStartTrackingTouch(SeekBar seekBar) {
                 mediaPlayer.pause();
 
             }
