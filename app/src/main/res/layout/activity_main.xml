@@ -80,12 +80,13 @@
             android:layout_height="50dp"
             android:src="@mipmap/btn_next"
             />
-        <ImageView
-            android:id="@+id/ivCMmodel"
+        <TextView
+            android:id="@+id/tvCMmodel"
             android:layout_marginLeft="15dp"
-            android:layout_width="50dp"
+            android:layout_width="100dp"
             android:layout_height="50dp"
-            android:src="@mipmap/btn_next"
+            android:text="顺序播放"
+            android:textColor="#ffffff"
             />
     </LinearLayout>
 

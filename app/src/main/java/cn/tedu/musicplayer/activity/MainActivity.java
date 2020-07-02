@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
     public CircleImageView ivCMPic;
     public MediaPlayer mediaPlayer;
     private RelativeLayout rlPlayMusic;
-    public TextView tvPMTitle, tvPMSinger, tvPMLrc, tvPMCurrentTime, tvPMTotalTime;
+    public TextView tvPMTitle, tvPMSinger, tvPMLrc, tvPMCurrentTime, tvPMTotalTime,tvCMmodel;
     public ImageView ivPMBackground, ivPMAlbum,ivPMStart;
     public SeekBar seekBar;
     private MyApp app;
@@ -317,8 +317,13 @@ public class MainActivity extends AppCompatActivity {
             }
            }
        });
-        {
-        }
+       tvCMmodel.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View view) {
+               String model;
+
+           }
+       });
     };
 
     private void setPagerAdapter() {
@@ -351,6 +356,7 @@ public class MainActivity extends AppCompatActivity {
         ivPMAlbum =  findViewById(R.id.ivPMAlbum);
         ivPMStart = findViewById(R.id.ivPMStart);
         seekBar =  findViewById(R.id.seekBar);
+        tvCMmodel=findViewById(R.id.tvCMmodel);
 
 
 
