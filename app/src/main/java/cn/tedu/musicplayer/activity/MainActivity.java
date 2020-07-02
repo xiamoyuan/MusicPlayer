@@ -88,6 +88,13 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mediaPlayer) {
+                if(app.getSongs()!=null)
+                {nextMusic();}
+            }
+        });
     }
     /**
      * 暂停或播放
@@ -105,46 +112,11 @@ public class MainActivity extends AppCompatActivity {
                 startOrPause();
                 break;
             case R.id.ivPMNext://下一首
-                app.nextMusic();
-                Song_list currentMusic = app.getCurrentMusic();
-                model.loadSongInfo(currentMusic.getSong_id(), new SongInfoCallBack() {
-                    @Override
-                    public void onSongInfoLoaded(Song song) {
-                        //播放音乐
-                        String titile=song.getSonginfo().getTitle();
-                        tvCMTitle.setText(titile);
-                        String smallPicPath=song.getSonginfo().getPic_small();
-                        BitmapUtils.loadBitmap(getApplicationContext(),smallPicPath, new BitmapCallback(){
-                            @Override
-                            public void onBitmapLoaded(Bitmap bitmap) {
-                                if(bitmap!=null){
-                                    ivCMPic.setImageBitmap(bitmap);
-                                    //让imageView转起来
-                                    RotateAnimation anim = new RotateAnimation(0, 360, ivCMPic.getWidth()/2, ivCMPic.getHeight()/2);
-                                    anim.setDuration(10000);
-                                    //匀速旋转
-                                    anim.setInterpolator(new LinearInterpolator());
-                                    //无限重复
-                                    anim.setRepeatCount(Animation.INFINITE);
-                                    ivCMPic.startAnimation(anim);
-                                }
-
-                                else{
-                                    ivCMPic.setImageResource(R.mipmap.ic_launcher);
-                                }
-                            }
-
-                        });
-                        playMusic(song.getBitrate().getFile_link());
-                        ImageUtil.setPlayImage(app.getApplicationContext(),song.getSonginfo().getPic_premium(), ivPMAlbum, ivPMBackground);
-                        tvPMTitle.setText(song.getSonginfo().getTitle());
-                        tvPMSinger.setText(song.getSonginfo().getAuthor());
-
-                    }
-                });
+                nextMusic();
                 break;
             case R.id.ivPMPre://上一首
                 app.preMusic();
+                Song_list currentMusic = app.getCurrentMusic();
                 currentMusic = app.getCurrentMusic();
                 model.loadSongInfo(currentMusic.getSong_id(), new SongInfoCallBack() {
                     @Override
@@ -186,6 +158,47 @@ public class MainActivity extends AppCompatActivity {
 
         }
     }
+    /*
+    **把下一首写到函数里面
+     */
+    public void nextMusic()
+    {
+        app.nextMusic();
+        Song_list currentMusic = app.getCurrentMusic();
+        model.loadSongInfo(currentMusic.getSong_id(), new SongInfoCallBack() {
+            @Override
+            public void onSongInfoLoaded(Song song) {
+                //播放音乐
+                String titile = song.getSonginfo().getTitle();
+                tvCMTitle.setText(titile);
+                String smallPicPath = song.getSonginfo().getPic_small();
+                BitmapUtils.loadBitmap(getApplicationContext(), smallPicPath, new BitmapCallback() {
+                    @Override
+                    public void onBitmapLoaded(Bitmap bitmap) {
+                        if (bitmap != null) {
+                            ivCMPic.setImageBitmap(bitmap);
+                            //让imageView转起来
+                            RotateAnimation anim = new RotateAnimation(0, 360, ivCMPic.getWidth() / 2, ivCMPic.getHeight() / 2);
+                            anim.setDuration(10000);
+                            //匀速旋转
+                            anim.setInterpolator(new LinearInterpolator());
+                            //无限重复
+                            anim.setRepeatCount(Animation.INFINITE);
+                            ivCMPic.startAnimation(anim);
+                        } else {
+                            ivCMPic.setImageResource(R.mipmap.ic_launcher);
+                        }
+                    }
+
+                });
+                playMusic(song.getBitrate().getFile_link());
+                ImageUtil.setPlayImage(app.getApplicationContext(), song.getSonginfo().getPic_premium(), ivPMAlbum, ivPMBackground);
+                tvPMTitle.setText(song.getSonginfo().getTitle());
+                tvPMSinger.setText(song.getSonginfo().getAuthor());
+            }
+
+        });
+        }
 
     public void playMusic(String url)
     {
@@ -342,13 +355,13 @@ public class MainActivity extends AppCompatActivity {
             public void onStartTrackingTouch(SeekBar seekBar)
             {
                 mediaPlayer.pause();
+
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 mediaPlayer.start();
                 mediaPlayer.seekTo(seekBar.getProgress());//在当前位置播放
-                Log.e("seek", String.valueOf(seekBar.getProgress()));
             }
         });
     }

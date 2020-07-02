@@ -93,7 +93,7 @@ public class NewMusicListFragment extends Fragment {
             timer.schedule(new TimerTask() {
                 @Override
                 public void run() {
-                    if(activity.mediaPlayer!=null){
+                    if(activity.mediaPlayer!=null&&activity.mediaPlayer.isPlaying()){
                         activity.runOnUiThread(new Runnable(){
 
                             @Override
