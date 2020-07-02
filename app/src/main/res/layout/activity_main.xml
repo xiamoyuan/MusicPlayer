@@ -67,14 +67,26 @@
 
         <TextView
             android:id="@+id/tvCMTitle"
-            android:layout_width="match_parent"
+            android:layout_width="210dp"
             android:layout_height="match_parent"
             android:gravity="center_vertical"
             android:singleLine="true"
             android:layout_marginLeft="10dp"
             android:textColor="#ffffff"
             android:text="歌曲名称" />
-
+        <ImageView
+            android:id="@+id/ivCMpause"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@mipmap/btn_next"
+            />
+        <ImageView
+            android:id="@+id/ivCMmodel"
+            android:layout_marginLeft="15dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@mipmap/btn_next"
+            />
     </LinearLayout>
 
     <RelativeLayout

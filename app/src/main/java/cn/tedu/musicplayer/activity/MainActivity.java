@@ -142,48 +142,55 @@ public class MainActivity extends AppCompatActivity {
                 nextMusic();
                 break;
             case R.id.ivPMPre://上一首
-                app.preMusic();
-                Song_list currentMusic = app.getCurrentMusic();
-                currentMusic = app.getCurrentMusic();
-                model.loadSongInfo(currentMusic.getSong_id(), new SongInfoCallBack() {
-                    @Override
-                    public void onSongInfoLoaded(Song song) {
-                        //播放音乐
-                        String titile=song.getSonginfo().getTitle();
-                        tvCMTitle.setText(titile);
-                        String smallPicPath=song.getSonginfo().getPic_small();
-                        BitmapUtils.loadBitmap(getApplicationContext(),smallPicPath, new BitmapCallback(){
-                            @Override
-                            public void onBitmapLoaded(Bitmap bitmap) {
-                                if(bitmap!=null){
-                                    ivCMPic.setImageBitmap(bitmap);
-                                    //让imageView转起来
-                                    RotateAnimation anim = new RotateAnimation(0, 360, ivCMPic.getWidth()/2, ivCMPic.getHeight()/2);
-                                    anim.setDuration(10000);
-                                    //匀速旋转
-                                    anim.setInterpolator(new LinearInterpolator());
-                                    //无限重复
-                                    anim.setRepeatCount(Animation.INFINITE);
-                                    ivCMPic.startAnimation(anim);
-                                }
-
-                                else{
-                                    ivCMPic.setImageResource(R.mipmap.ic_launcher);
-                                }
-                            }
-
-                        });
-                        tvPMTitle.setText(song.getSonginfo().getTitle());
-                        tvPMSinger.setText(song.getSonginfo().getAuthor());
-                        playMusic(song.getBitrate().getFile_link());
-                        ImageUtil.setPlayImage(app.getApplicationContext(),song.getSonginfo().getPic_premium(), ivPMAlbum, ivPMBackground);
-
-                    }
-                });
+                preMusic();
                 break;
             default:
 
         }
+    }
+    /*
+    **上一首
+     */
+    public void preMusic()
+    {
+        app.preMusic();
+        Song_list currentMusic = app.getCurrentMusic();
+        currentMusic = app.getCurrentMusic();
+        model.loadSongInfo(currentMusic.getSong_id(), new SongInfoCallBack() {
+            @Override
+            public void onSongInfoLoaded(Song song) {
+                //播放音乐
+                String titile=song.getSonginfo().getTitle();
+                tvCMTitle.setText(titile);
+                String smallPicPath=song.getSonginfo().getPic_small();
+                BitmapUtils.loadBitmap(getApplicationContext(),smallPicPath, new BitmapCallback(){
+                    @Override
+                    public void onBitmapLoaded(Bitmap bitmap) {
+                        if(bitmap!=null){
+                            ivCMPic.setImageBitmap(bitmap);
+                            //让imageView转起来
+                            RotateAnimation anim = new RotateAnimation(0, 360, ivCMPic.getWidth()/2, ivCMPic.getHeight()/2);
+                            anim.setDuration(10000);
+                            //匀速旋转
+                            anim.setInterpolator(new LinearInterpolator());
+                            //无限重复
+                            anim.setRepeatCount(Animation.INFINITE);
+                            ivCMPic.startAnimation(anim);
+                        }
+
+                        else{
+                            ivCMPic.setImageResource(R.mipmap.ic_launcher);
+                        }
+                    }
+
+                });
+                tvPMTitle.setText(song.getSonginfo().getTitle());
+                tvPMSinger.setText(song.getSonginfo().getAuthor());
+                playMusic(song.getBitrate().getFile_link());
+                ImageUtil.setPlayImage(app.getApplicationContext(),song.getSonginfo().getPic_premium(), ivPMAlbum, ivPMBackground);
+
+            }
+        });
     }
     /*
     **把下一首写到函数里面
