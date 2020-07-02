@@ -79,6 +79,7 @@ public class MainActivity extends AppCompatActivity {
         setmediaPlayer();
         setSeekBar();
         app = MyApp.getApp();
+        app.setModel(0);
         model=new MusicModel();
     }
 
@@ -105,6 +106,7 @@ public class MainActivity extends AppCompatActivity {
 
         }
     }
+    //设置播放初始化
     public void setmediaPlayer()
     {
         mediaPlayer=new MediaPlayer();
@@ -119,7 +121,16 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onCompletion(MediaPlayer mediaPlayer) {
                 if(app.getSongs()!=null)
-                {nextMusic();}
+                {
+                    if(app.getModel()==0)
+                        nextMusic();
+                    if(app.getModel()==1)
+                        //随机播放
+                        randomMusic();
+                    if(app.getModel()==2)
+                        //单曲循环
+                        thisMusic();
+                }
             }
         });
     }
@@ -142,10 +153,24 @@ public class MainActivity extends AppCompatActivity {
                 startOrPause();
                 break;
             case R.id.ivPMNext://下一首
-                nextMusic();
+                if(app.getModel()==0)
+                    nextMusic();
+                if(app.getModel()==1)
+                    //随机播放
+                    randomMusic();
+                if(app.getModel()==2)
+                    //单曲循环
+                    thisMusic();
                 break;
             case R.id.ivPMPre://上一首
-                preMusic();
+                if(app.getModel()==0)
+                    preMusic();
+                if(app.getModel()==1)
+                    randomMusic();
+                    //随机播放
+                if(app.getModel()==2)
+                    //单曲循环
+                    thisMusic();
                 break;
             default:
 
@@ -236,7 +261,90 @@ public class MainActivity extends AppCompatActivity {
 
         });
         }
+    /*
+    **随机播放
+    */
+    public void randomMusic()
+    {
+        app.radomMusic();
+        Song_list currentMusic = app.getCurrentMusic();
+        model.loadSongInfo(currentMusic.getSong_id(), new SongInfoCallBack() {
+            @Override
+            public void onSongInfoLoaded(Song song) {
+                //播放音乐
+                String titile = song.getSonginfo().getTitle();
+                tvCMTitle.setText(titile);
+                String smallPicPath = song.getSonginfo().getPic_small();
+                BitmapUtils.loadBitmap(getApplicationContext(), smallPicPath, new BitmapCallback() {
+                    @Override
+                    public void onBitmapLoaded(Bitmap bitmap) {
+                        if (bitmap != null) {
+                            ivCMPic.setImageBitmap(bitmap);
+                            //让imageView转起来
+                            RotateAnimation anim = new RotateAnimation(0, 360, ivCMPic.getWidth() / 2, ivCMPic.getHeight() / 2);
+                            anim.setDuration(10000);
+                            //匀速旋转
+                            anim.setInterpolator(new LinearInterpolator());
+                            //无限重复
+                            anim.setRepeatCount(Animation.INFINITE);
+                            ivCMPic.startAnimation(anim);
+                        } else {
+                            ivCMPic.setImageResource(R.mipmap.ic_launcher);
+                        }
+                    }
 
+                });
+                playMusic(song.getBitrate().getFile_link());
+                ImageUtil.setPlayImage(app.getApplicationContext(), song.getSonginfo().getPic_premium(), ivPMAlbum, ivPMBackground);
+                tvPMTitle.setText(song.getSonginfo().getTitle());
+                tvPMSinger.setText(song.getSonginfo().getAuthor());
+            }
+
+        });
+    }
+    /*
+    **单曲循环
+     */
+    public void thisMusic()
+    {
+        Song_list currentMusic = app.getCurrentMusic();
+        model.loadSongInfo(currentMusic.getSong_id(), new SongInfoCallBack() {
+            @Override
+            public void onSongInfoLoaded(Song song) {
+                //播放音乐
+                String titile = song.getSonginfo().getTitle();
+                tvCMTitle.setText(titile);
+                String smallPicPath = song.getSonginfo().getPic_small();
+                BitmapUtils.loadBitmap(getApplicationContext(), smallPicPath, new BitmapCallback() {
+                    @Override
+                    public void onBitmapLoaded(Bitmap bitmap) {
+                        if (bitmap != null) {
+                            ivCMPic.setImageBitmap(bitmap);
+                            //让imageView转起来
+                            RotateAnimation anim = new RotateAnimation(0, 360, ivCMPic.getWidth() / 2, ivCMPic.getHeight() / 2);
+                            anim.setDuration(10000);
+                            //匀速旋转
+                            anim.setInterpolator(new LinearInterpolator());
+                            //无限重复
+                            anim.setRepeatCount(Animation.INFINITE);
+                            ivCMPic.startAnimation(anim);
+                        } else {
+                            ivCMPic.setImageResource(R.mipmap.ic_launcher);
+                        }
+                    }
+
+                });
+                playMusic(song.getBitrate().getFile_link());
+                ImageUtil.setPlayImage(app.getApplicationContext(), song.getSonginfo().getPic_premium(), ivPMAlbum, ivPMBackground);
+                tvPMTitle.setText(song.getSonginfo().getTitle());
+                tvPMSinger.setText(song.getSonginfo().getAuthor());
+            }
+
+        });
+    }
+    /*
+    播放音乐准备
+     */
     public void playMusic(String url)
     {
         try {
@@ -260,7 +368,7 @@ public class MainActivity extends AppCompatActivity {
                 rlPlayMusic.startAnimation(anim);
             }
         });
-
+        //拦截事件tvCMTitle
         tvCMTitle.setOnTouchListener(new View.OnTouchListener() {
             public boolean onTouch(View v, MotionEvent event) {
                 //自己消费touch事件
@@ -274,7 +382,7 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
-
+        //选中新歌/热歌
        vpContainer.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
            @Override
            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -302,7 +410,7 @@ public class MainActivity extends AppCompatActivity {
 
            }
        });
-
+        //切换页面
        rgRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
            @Override
            public void onCheckedChanged(RadioGroup radioGroup, int i) {
@@ -317,10 +425,27 @@ public class MainActivity extends AppCompatActivity {
             }
            }
        });
+        //播放模式切换
        tvCMmodel.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View view) {
                String model;
+               model=tvCMmodel.getText().toString();
+               switch (model)
+               {
+                   case "顺序播放":
+                       tvCMmodel.setText("随机播放");
+                       app.setModel(1);
+                       break;
+                   case "随机播放":
+                       tvCMmodel.setText("单曲循环");
+                       app.setModel(2);
+                       break;
+                   case "单曲循环":
+                       tvCMmodel.setText("顺序播放");
+                       app.setModel(0);
+                       break;
+               }
 
            }
        });
@@ -392,6 +517,7 @@ public void onBackPressed()
             super.onBackPressed();
         }
 }
+
 //setSeekBar
 public void setSeekBar()
     {

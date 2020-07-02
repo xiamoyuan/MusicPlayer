@@ -10,6 +10,16 @@ public class MyApp extends Application {
      private  static MyApp app;
      private List<Song_list>songs;
      private  int position;
+
+    public int getModel() {
+        return model;
+    }
+
+    public void setModel(int model) {
+        this.model = model;
+    }
+
+    private int model;
      @Override
     public void onCreate()
      {
@@ -54,5 +64,12 @@ public class MyApp extends Application {
     public void nextMusic()
     {
         position=position==songs.size()-1?0:position+1;
+    }
+    /**
+     * 随机播放
+     */
+    public void radomMusic()
+    {
+        position=(int)(Math.random()*(songs.size()-1));
     }
 }
