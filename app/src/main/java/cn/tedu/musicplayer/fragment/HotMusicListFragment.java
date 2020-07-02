@@ -22,6 +22,7 @@ import androidx.fragment.app.Fragment;
 import cn.tedu.musicplayer.R;
 import cn.tedu.musicplayer.activity.MainActivity;
 import cn.tedu.musicplayer.adapter.MusicAdapter;
+import cn.tedu.musicplayer.app.MyApp;
 import cn.tedu.musicplayer.entity.Song_list;
 import cn.tedu.musicplayer.model.BitmapCallback;
 import cn.tedu.musicplayer.model.MusicListCallback;
@@ -32,6 +33,8 @@ import cn.tedu.musicplayer.util.BitmapUtils;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 
 public class HotMusicListFragment extends Fragment {
@@ -45,6 +48,7 @@ public class HotMusicListFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable final Bundle savedInstanceState) {
         View view=inflater.inflate(R.layout.activity_new_music_list_fragment,null);
         setViews(view);
+        final MyApp app=MyApp.getApp();
         //调用业务层，加载所有新歌榜音乐
         model=new MusicModel();
         model.loadHotMusicList(0, 20, new MusicListCallback() {
@@ -56,6 +60,7 @@ public class HotMusicListFragment extends Fragment {
             }
         });
         setListener();
+        musicTime();
         return view;
     }
     private void setAdapter() {
@@ -73,8 +78,38 @@ public class HotMusicListFragment extends Fragment {
         super.onDestroy();
         //把adapter中的线程停掉
         adapter.stopThread();
-
+        System.exit(1);
     }
+
+
+    public void musicTime()
+    {
+        final MainActivity activity=(MainActivity) getActivity();
+        Timer timer = new Timer();
+        {
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    if(activity.mediaPlayer!=null&&activity.mediaPlayer.isPlaying()){
+                        activity.runOnUiThread(new Runnable(){
+
+                            @Override
+                            public void run() {
+                                //更新UI
+                                int position = activity.mediaPlayer.getCurrentPosition();
+                                activity.tvPMCurrentTime.setText(calculateTime(position/1000));
+                                activity.seekBar.setProgress(position);
+
+                            }
+
+                        });
+                    }
+                }
+            },0,50);
+
+        }
+    }
+
     public void playMusic(String url)
     {
         final MainActivity activity=(MainActivity) getActivity();
@@ -87,6 +122,55 @@ public class HotMusicListFragment extends Fragment {
         {
             e.printStackTrace();
         }
+        activity.mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+            @Override
+            public void onPrepared(MediaPlayer mediaPlayer) {
+                activity.mediaPlayer.start();
+                int duration2 = activity.mediaPlayer.getDuration() / 1000;
+                int position = activity.mediaPlayer.getCurrentPosition();
+                activity.tvPMCurrentTime.setText(calculateTime(position/1000));
+                activity.tvPMTotalTime.setText(calculateTime(duration2));
+                activity.seekBar.setMax(duration2*1000);
+                activity.seekBar.setProgress(position);
+
+
+            };
+
+        });
+
+    }
+
+    public String calculateTime(int time){
+        int minute;
+        int second;
+        if(time > 60){
+            minute = time / 60;
+            second = time % 60;
+            //分钟再0~9
+            if(minute >= 0 && minute < 10){
+                //判断秒
+                if(second >= 0 && second < 10){
+                    return "0"+minute+":"+"0"+second;
+                }else {
+                    return "0"+minute+":"+second;
+                }
+            }else {
+                //分钟大于10再判断秒
+                if(second >= 0 && second < 10){
+                    return minute+":"+"0"+second;
+                }else {
+                    return minute+":"+second;
+                }
+            }
+        }else if(time < 60){
+            second = time;
+            if(second >= 0 && second < 10){
+                return "00:"+"0"+second;
+            }else {
+                return "00:"+ second;
+            }
+        }
+        return null;
     }
 
 
@@ -96,12 +180,15 @@ public class HotMusicListFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Song_list song_list = song_lists.get(position);
                 //获取当前点击音乐的song_id
+                MyApp app=MyApp.getApp();
+                app.setPosition(position);
                 String song_id = song_list.getSong_id();
                 Log.e("ss",song_id);
                 model.loadSongInfo(song_id, new SongInfoCallBack() {
                     @Override
                     public void onSongInfoLoaded(Song song) {
                         String fileLink=song.getBitrate().getFile_link();
+                        Log.e("url",fileLink);
                         playMusic(fileLink);
                         String titile=song.getSonginfo().getTitle();
                         String smallPicPath=song.getSonginfo().getPic_small();
@@ -128,13 +215,18 @@ public class HotMusicListFragment extends Fragment {
                             }
 
                         });
+                        //更新播放界面中的ivPMAlbum
                         final ImageView ivPMAlbum=activity.ivPMAlbum;
                         final ImageView ivPMBackground=activity.ivPMBackground;
-                        final TextView tvPMTitle=activity.tvPMTitle;
+                        final TextView  tvPMTitle=activity.tvPMTitle;
                         final TextView  tvPMSinger=activity.tvPMSinger;
+                        final ImageView ivCMpause=activity.ivCMpause;
+                        final ImageView ivPMStart=activity.ivPMStart;
                         String albumPic=song.getSonginfo().getPic_premium();
                         tvPMTitle.setText(titile);
                         tvPMSinger.setText(song.getSonginfo().getAuthor());
+                        ivPMStart.setImageResource(R.mipmap.btn_start);
+                        ivCMpause.setImageResource(R.mipmap.btn_start);
                         BitmapUtils.loadBitmap(getContext(),albumPic, new BitmapCallback() {
                             public void onBitmapLoaded(Bitmap bitmap) {
                                 if(bitmap!=null){ //下载

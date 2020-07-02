@@ -78,7 +78,7 @@
             android:id="@+id/ivCMpause"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:src="@mipmap/btn_next"
+            android:src="@mipmap/btn_pause"
             />
         <TextView
             android:id="@+id/tvCMmodel"

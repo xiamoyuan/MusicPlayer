@@ -224,9 +224,13 @@ public class NewMusicListFragment extends Fragment {
                         final ImageView ivPMBackground=activity.ivPMBackground;
                         final TextView  tvPMTitle=activity.tvPMTitle;
                         final TextView  tvPMSinger=activity.tvPMSinger;
+                        final ImageView ivCMpause=activity.ivCMpause;
+                        final ImageView ivPMStart=activity.ivPMStart;
                         String albumPic=song.getSonginfo().getPic_premium();
                         tvPMTitle.setText(titile);
                         tvPMSinger.setText(song.getSonginfo().getAuthor());
+                        ivPMStart.setImageResource(R.mipmap.btn_start);
+                        ivCMpause.setImageResource(R.mipmap.btn_start);
                         BitmapUtils.loadBitmap(getContext(),albumPic, new BitmapCallback() {
                             public void onBitmapLoaded(Bitmap bitmap) {
                                 if(bitmap!=null){ //下载

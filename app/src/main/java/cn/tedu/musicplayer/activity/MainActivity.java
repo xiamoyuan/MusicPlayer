@@ -60,10 +60,12 @@ public class MainActivity extends AppCompatActivity {
     public MediaPlayer mediaPlayer;
     private RelativeLayout rlPlayMusic;
     public TextView tvPMTitle, tvPMSinger, tvPMLrc, tvPMCurrentTime, tvPMTotalTime,tvCMmodel;
-    public ImageView ivPMBackground, ivPMAlbum,ivPMStart;
+    public ImageView ivPMBackground, ivPMAlbum,ivPMStart,ivCMpause;
     public SeekBar seekBar;
     private MyApp app;
     private MusicModel model;
+
+
 
 
     @Override
@@ -81,7 +83,11 @@ public class MainActivity extends AppCompatActivity {
         app = MyApp.getApp();
         app.setModel(0);
         model=new MusicModel();
+
     }
+
+
+
 
 
 
@@ -141,10 +147,12 @@ public class MainActivity extends AppCompatActivity {
         if(mediaPlayer.isPlaying()){
             mediaPlayer.pause();
             ivPMStart.setImageResource(R.mipmap.btn_pause);
+            ivCMpause.setImageResource(R.mipmap.btn_pause);
 
         }else{
             mediaPlayer.start();
             ivPMStart.setImageResource(R.mipmap.btn_start);
+            ivCMpause.setImageResource(R.mipmap.btn_start);
         }
     }
     public void controllMusic(View view){
@@ -358,6 +366,13 @@ public class MainActivity extends AppCompatActivity {
         }
     }
     private void setListener() {
+        //底部按钮播放/暂停
+        ivCMpause.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startOrPause();
+            }
+        });
         //给圆形ImageView添加事件监听 点击后弹出rlPlayMusic
         ivCMPic.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -369,6 +384,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         //拦截事件tvCMTitle
+
+
+
         tvCMTitle.setOnTouchListener(new View.OnTouchListener() {
             public boolean onTouch(View v, MotionEvent event) {
                 //自己消费touch事件
@@ -482,6 +500,7 @@ public class MainActivity extends AppCompatActivity {
         ivPMStart = findViewById(R.id.ivPMStart);
         seekBar =  findViewById(R.id.seekBar);
         tvCMmodel=findViewById(R.id.tvCMmodel);
+        ivCMpause=findViewById(R.id.ivCMpause);
 
 
 
