@@ -6,57 +6,13 @@
     android:layout_height="match_parent"
     android:focusable="true"
     android:focusableInTouchMode="true"
-    tools:context=".activity.MainActivity">
-    <EditText
-        android:id="@+id/searchBar"
-        android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:singleLine="true"
-        android:imeOptions="actionSearch"
-        android:hint="搜索歌曲"
-        android:textColorHint="@color/tab_unchecked"
-        android:paddingLeft="10dp"
-        android:textColor="@color/tab_checked"
-        android:textSize="16dp"
-        android:paddingTop="3dp"
-        android:paddingBottom="3dp"
-        android:background="@color/colorGreen" />
+    tools:context="activity.SearchActivity">
 
-
-    <RadioGroup
-        android:id="@+id/rg_radiogroup"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_below="@+id/searchBar"
-        android:orientation="horizontal">
-        <RadioButton
-            android:id="@+id/rb_new"
-            android:layout_width="0dp"
-            android:layout_height="40dp"
-            android:layout_weight="1"
-            android:button="@null"
-            android:checked="true"
-            android:gravity="center"
-            android:text="新歌榜"
-            android:textSize="24sp"
-            android:textColor="@drawable/selector_tab"/>
-        <RadioButton
-            android:id="@+id/rb_hot"
-            android:layout_width="0dp"
-            android:layout_height="40dp"
-            android:layout_weight="1"
-            android:button="@null"
-            android:gravity="center"
-            android:text="热歌榜"
-            android:textSize="24sp"
-            android:textColor="@drawable/selector_tab">
-        </RadioButton>
-    </RadioGroup>
-    <androidx.viewpager.widget.ViewPager
-        android:id="@+id/vp_container"
+    <ListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/rg_radiogroup"/>
+        android:id="@+id/lv_music"/>
+
     <LinearLayout
         android:id="@+id/llBottomBar"
         android:layout_width="match_parent"
@@ -217,20 +173,19 @@
                 android:id="@+id/ivPMStart"
                 android:layout_width="0dp"
                 android:layout_weight="1"
-                android:layout_height="wrap_content"
                 android:onClick="controllMusic"
-                android:src="@mipmap/btn_pause" />
+                android:layout_height="wrap_content"
+                android:src="@mipmap/btn_start" />
 
             <ImageView
                 android:id="@+id/ivPMNext"
                 android:layout_width="0dp"
                 android:layout_weight="1"
-                android:layout_height="wrap_content"
                 android:onClick="controllMusic"
+                android:layout_height="wrap_content"
                 android:src="@mipmap/btn_next" />
 
         </LinearLayout>
 
     </RelativeLayout>
-
 </RelativeLayout>

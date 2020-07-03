@@ -19,4 +19,8 @@ public class UrlFactory {
         String url="http://tingapi.ting.baidu.com/v1/restserver/ting?method=baidu.ting.song.play&songid="+songId;
         return url;
     }
+    public static String getSongByName(String songName){
+        String url="http://tingapi.ting.baidu.com/v1/restserver/ting?method=baidu.ting.search.catalogSug&query="+songName;
+        return url;
+    }
 }

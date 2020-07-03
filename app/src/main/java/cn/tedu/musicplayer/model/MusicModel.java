@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import cn.tedu.musicplayer.app.MyApp;
+import cn.tedu.musicplayer.entity.SearchSongInfo;
 import cn.tedu.musicplayer.entity.Song_list;
 import cn.tedu.musicplayer.util.HttpUtils;
 import cn.tedu.musicplayer.util.JSONParser;
@@ -171,6 +172,30 @@ public class MusicModel {
             protected void onPostExecute(HashMap<String, String> result) {
                 //调用回调方法
                 callback.onLrcLoaded(result);
+            }
+        };
+        task.execute();
+    }
+
+    public void loadSongSearch(final String songName,final QuerySongCallback callback){
+        @SuppressLint("StaticFieldLeak") AsyncTask<Void,Void,List<SearchSongInfo>>task=new AsyncTask<Void, Void, List<SearchSongInfo>>() {
+            @Override
+            protected List<SearchSongInfo> doInBackground(Void... voids) {
+                //发送Http请求获取当前音乐信息
+                try {
+                    String path=UrlFactory.getSongByName(songName);
+                    String result = HttpUtils.getStringForOkHttp(path);
+                    List<SearchSongInfo> searchSongInfos= JSONParser.parseMusicQuery(result);
+                    return searchSongInfos;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(List<SearchSongInfo> searchSongInfos) {
+                callback.QuerySongLoad(searchSongInfos);
             }
         };
         task.execute();

@@ -6,6 +6,8 @@ package cn.tedu.musicplayer.entity;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.HashMap;
+
 /**
  * Auto-generated: 2020-06-30 9:27:57
  *

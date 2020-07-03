@@ -1,5 +1,7 @@
 package cn.tedu.musicplayer.adapter;
 
+import java.util.List;
+
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,23 +11,21 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import java.util.List;
-
 import cn.tedu.musicplayer.R;
-import cn.tedu.musicplayer.entity.Song_list;
+import cn.tedu.musicplayer.entity.SearchSongInfo;
 import cn.tedu.musicplayer.util.ImageLoader;
 
-public class MusicAdapter extends BaseAdapter{
+public class QueryMusicAdapter extends BaseAdapter{
     private Context context;
-    private List<Song_list> musics;
-    private LayoutInflater inflater;
+    private List<SearchSongInfo> musics;
     private ImageLoader imageLoader;
+    private LayoutInflater inflater;
 
-    public MusicAdapter(Context context, List<Song_list> musics,ListView listView) {
+    public QueryMusicAdapter(Context context, List<SearchSongInfo> musics,ListView listView) {
         this.context=context;
         this.musics = musics;
-        this.inflater = LayoutInflater.from(context);
         this.imageLoader=new ImageLoader(context,listView);
+        this.inflater = LayoutInflater.from(context);
     }
 
 
@@ -38,7 +38,7 @@ public class MusicAdapter extends BaseAdapter{
     }
 
     @Override
-    public Song_list getItem(int position) {
+    public SearchSongInfo getItem(int position) {
         if(musics!=null) {
             return musics.get(position);
         }
@@ -63,11 +63,11 @@ public class MusicAdapter extends BaseAdapter{
         }
         holder=(ViewHolder) convertView.getTag();
         //控件的赋值
-        Song_list m = getItem(position);
-        holder.tvTitle.setText(m.getTitle());
-        holder.tvSinger.setText(m.getAuthor());
+        SearchSongInfo m = getItem(position);
+        holder.tvTitle.setText(m.getSongname());
+        holder.tvSinger.setText(m.getArtistname());
         //使用ImageLoader工具类加载网络图片
-        imageLoader.displayImage(holder.ivAlbum,m.getPic_small());
+        imageLoader.displayImage(holder.ivAlbum,m.getArtistpic());
         return convertView;
     }
 
